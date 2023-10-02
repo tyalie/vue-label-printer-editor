@@ -11,10 +11,10 @@
     <Divider plain orientation="left">{{ $t('size') }}</Divider>
     <Form :label-width="40" class="form-wrap">
       <FormItem :label="$t('width')" prop="name">
-        <InputNumber disabled v-model="width" @on-change="setSize"></InputNumber>
+        <InputNumber v-model="width" @on-change="setSize"></InputNumber>
       </FormItem>
       <FormItem :label="$t('height')" prop="name">
-        <InputNumber disabled v-model="height" @on-change="setSize"></InputNumber>
+        <InputNumber v-model="height" @on-change="setSize"></InputNumber>
       </FormItem>
     </Form>
     <Button type="primary" @click="() => (showModal = true)">调整尺寸</Button>
@@ -90,16 +90,10 @@ let presetSize = reactive([
 
 onMounted(() => {
   canvasEditor.setSize(width.value, height.value);
-  canvasEditor.on('sizeChange', (width, height) => {
-    width.value = width;
-    height.value = height;
+  canvasEditor.on('sizeChange', (n_width, n_height) => {
+    width.value = n_width;
+    height.value = n_height;
   });
-
-  // canvas.editor.editorWorkspace.setSize(width.value, height.value);
-  // canvas.editor.editorWorkspace = new EditorWorkspace(canvas.c, {
-  //   width: width.value,
-  //   height: height.value,
-  // });
 });
 
 const setSizeBy = (w, h) => {
@@ -108,7 +102,6 @@ const setSizeBy = (w, h) => {
 };
 const setSize = () => {
   canvasEditor.setSize(width.value, height.value);
-  // canvas.editor.editorWorkspace.setSize(width.value, height.value);
 };
 
 const handleClose = () => {

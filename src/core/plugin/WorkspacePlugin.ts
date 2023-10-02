@@ -24,8 +24,12 @@ class WorkspacePlugin {
     this.canvas = canvas;
     this.editor = editor;
     this.init({
-      width: 900,
-      height: 2000,
+      width: 100,
+      height: 128,
+      flexibleX: true,
+      flexibleY: false,
+      marginX: 10,
+      marginY: 10,
     });
   }
 
@@ -41,6 +45,7 @@ class WorkspacePlugin {
     this._initWorkspace();
     this._initResizeObserve();
     this._bindWheel();
+    this._bindMove();
   }
 
   // hookImportBefore() {
@@ -78,11 +83,10 @@ class WorkspacePlugin {
 
   // 初始化画布
   _initWorkspace() {
-    const { width, height } = this.option;
     const workspace = new fabric.Rect({
       fill: 'rgba(255,255,255,1)',
-      width,
-      height,
+      width: this.option.width,
+      height: this.option.height,
       id: 'workspace',
     });
     workspace.set('selectable', false);
@@ -120,6 +124,12 @@ class WorkspacePlugin {
     resizeObserver.observe(this.workspaceEl);
   }
 
+  setFlexibility(flexX: boolean, flexY: boolean) {
+    this.option.flexibleX = flexX;
+    this.option.flexibleY = flexY;
+    _resizeToFit();
+  }
+
   setSize(width: number, height: number) {
     this._initBackground();
     this.option.width = width;
@@ -130,7 +140,12 @@ class WorkspacePlugin {
       .find((item) => item.id === 'workspace') as fabric.Rect;
     this.workspace.set('width', width);
     this.workspace.set('height', height);
-    this.auto();
+
+    // 超出画布不展示
+    this.workspace.clone((cloned: fabric.Rect) => {
+      this.canvas.clipPath = cloned;
+      this.canvas.requestRenderAll();
+    });
   }
 
   setZoomAuto(scale: number, cb?: (left?: number, top?: number) => void) {
@@ -145,11 +160,6 @@ class WorkspacePlugin {
     if (!this.workspace) return;
     this.setCenterFromObject(this.workspace);
 
-    // 超出画布不展示
-    this.workspace.clone((cloned: fabric.Rect) => {
-      this.canvas.clipPath = cloned;
-      this.canvas.requestRenderAll();
-    });
     if (cb) cb(this.workspace.left, this.workspace.top);
   }
 
@@ -206,6 +216,36 @@ class WorkspacePlugin {
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
+  }
+
+  _bindMove() {
+    this.canvas.on('object:added', () => this._resizeToFit());
+    this.canvas.on('object:modified', () => this._resizeToFit());
+    this.canvas.on('object:removed', () => this._resizeToFit());
+  }
+
+  _resizeToFit() {
+    if (!(this.option.flexibleX || this.option.flexibleY)) return;
+
+    const max_x =
+      Math.max(
+        ...this.canvas
+          .getObjects()
+          .map((e) => (e.id == 'workspace' ? 0 : e.left + e.width * e.scaleX))
+      ) +
+      this.option.marginX * 2;
+    const max_y =
+      Math.max(
+        ...this.canvas
+          .getObjects()
+          .map((e) => (e.id == 'workspace' ? 0 : e.top + e.height * e.scaleY))
+      ) +
+      this.option.marginY * 2;
+    this.setSize(
+      Math.ceil(this.option.flexibleX ? max_x : this.option.width),
+      Math.ceil(this.option.flexibleY ? max_y : this.option.height)
+    );
+    this.editor.emit('sizeChange', this.option.width, this.option.height);
   }
 
   destroy() {
