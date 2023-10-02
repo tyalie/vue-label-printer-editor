@@ -46,35 +46,35 @@
       <div class="flex-view">
         <div class="flex-item">
           <ButtonGroup class="button-group">
-            <Button @click="changeFontWeight('fontWeight', fontAttr.fontWeight)">
+            <Button @click="changeTextStyle('fontWeight', 'bold')">
               <svg viewBox="0 0 1024 1024" width="14" height="14">
                 <path
                   d="M793.99865 476a244 244 0 0 0 54-130.42C862.75865 192.98 743.01865 64 593.85865 64H195.01865a32 32 0 0 0-32 32v96a32 32 0 0 0 32 32h63.74v576H195.01865a32 32 0 0 0-32 32v96a32 32 0 0 0 32 32h418.64c141.6 0 268.28-103.5 282-244.8 9.48-96.9-32.78-184.12-101.66-239.2zM418.33865 224h175.52a96 96 0 0 1 0 192h-175.52z m175.52 576h-175.52V576h175.52a112 112 0 0 1 0 224z"
-                  :fill="fontAttr.fontWeight === 'bold' ? '#305ef4' : '#666'"
+                  fill="#666"
                 ></path>
               </svg>
             </Button>
-            <Button @click="changeFontStyle('fontStyle', fontAttr.fontStyle)">
+            <Button @click="changeTextStyle('fontStyle', 'italic')">
               <svg viewBox="0 0 1024 1024" width="14" height="14">
                 <path
                   d="M832 96v64a32 32 0 0 1-32 32h-125.52l-160 640H608a32 32 0 0 1 32 32v64a32 32 0 0 1-32 32H224a32 32 0 0 1-32-32v-64a32 32 0 0 1 32-32h125.52l160-640H416a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32h384a32 32 0 0 1 32 32z"
-                  :fill="fontAttr.fontStyle === 'italic' ? '#305ef4' : '#666'"
+                  fill="#666"
                 ></path>
               </svg>
             </Button>
-            <Button @click="changeLineThrough('linethrough', fontAttr.linethrough)">
+            <Button @click="changeTextStyleBool('linethrough')">
               <svg viewBox="0 0 1024 1024" width="14" height="14">
                 <path
                   d="M893.088 501.792H125.344a32 32 0 0 0 0 64h767.744a32 32 0 0 0 0-64zM448 448h112V208h288V96H160v112h288zM448 640h112v288H448z"
-                  :fill="fontAttr.linethrough ? '#305ef4' : '#666'"
+                  fill="#666"
                 ></path>
               </svg>
             </Button>
-            <Button @click="changeUnderline('underline', fontAttr.underline)">
+            <Button @click="changeTextStyleBool('underline')">
               <svg viewBox="0 0 1024 1024" width="14" height="14">
                 <path
                   d="M703.232 67.008h127.488v413.248c0 158.016-142.656 286.016-318.72 286.016-176 0-318.72-128-318.72-286.016V67.008h127.488v413.248c0 39.872 18.176 78.144 51.136 107.776 36.8 32.96 86.528 51.072 140.096 51.072s103.36-18.112 140.032-51.136c33.024-29.632 51.2-67.968 51.2-107.776V67.008zM193.28 871.616h637.44v85.376H193.28v-85.376z"
-                  :fill="fontAttr.underline ? '#305ef4' : '#666'"
+                  fill="#666"
                 ></path>
               </svg>
             </Button>
@@ -438,6 +438,28 @@ const init = () => {
   canvasEditor.canvas.on('object:modified', getObjectAttr);
 };
 
+function setStyle(object, styleName, value) {
+  if (object.setSelectionStyles && object.isEditing) {
+    if (value == '') {
+      object.removeStyleFromTo();
+    } else {
+      var style = {};
+      style[styleName] = value;
+      object.setSelectionStyles(style);
+    }
+  } else {
+    object[styleName] = value;
+  }
+}
+function getStyle(object, styleName) {
+  if (object.getSelectionStyles && object.isEditing) {
+    let l = object.getSelectionStyles();
+    return l.reduce((acc, cur) => (acc == cur[styleName] ? cur[styleName] : ''), l[0][styleName]);
+  } else {
+    return object[styleName];
+  }
+}
+
 // 修改字体
 const changeFontFamily = (fontName) => {
   if (!fontName) return;
@@ -498,38 +520,19 @@ const borderSet = (key) => {
 };
 
 // 加粗
-const changeFontWeight = (key, value) => {
-  const nValue = value === 'normal' ? 'bold' : 'normal';
-  fontAttr.fontWeight = nValue;
-  const activeObject = canvasEditor.canvas.getActiveObjects()[0];
-  activeObject && activeObject.set(key, nValue);
+const changeTextStyle = (key, positive) => {
+  let obj = canvasEditor.canvas.getActiveObject();
+  let isX = getStyle(obj, key) === positive;
+  setStyle(obj, key, isX ? '' : positive);
+  obj.dirty = true;
   canvasEditor.canvas.renderAll();
 };
 
-// 斜体
-const changeFontStyle = (key, value) => {
-  const nValue = value === 'normal' ? 'italic' : 'normal';
-  fontAttr.fontStyle = nValue;
-  const activeObject = canvasEditor.canvas.getActiveObjects()[0];
-  activeObject && activeObject.set(key, nValue);
-  canvasEditor.canvas.renderAll();
-};
-
-// 中划
-const changeLineThrough = (key, value) => {
-  const nValue = value === false;
-  fontAttr.linethrough = nValue;
-  const activeObject = canvasEditor.canvas.getActiveObjects()[0];
-  activeObject && activeObject.set(key, nValue);
-  canvasEditor.canvas.renderAll();
-};
-
-// 下划
-const changeUnderline = (key, value) => {
-  const nValue = value === false;
-  fontAttr.underline = nValue;
-  const activeObject = canvasEditor.canvas.getActiveObjects()[0];
-  activeObject && activeObject.set(key, nValue);
+const changeTextStyleBool = (key) => {
+  let obj = canvasEditor.canvas.getActiveObject();
+  let isX = getStyle(obj, key) || false;
+  setStyle(obj, key, !isX);
+  obj.dirty = true;
   canvasEditor.canvas.renderAll();
 };
 
