@@ -131,14 +131,21 @@ class WorkspacePlugin {
     _resizeToFit();
   }
 
-  setSize(width: number, height: number) {
-    this._initBackground();
+  setSize(width: number, height: number, init = true) {
+    if (!init && this.option.width == width && this.option.height == height) return;
+
+    if (init) this._initBackground();
+
     this.option.width = width;
     this.option.height = height;
-    // 重新设置workspace
-    this.workspace = this.canvas
-      .getObjects()
-      .find((item) => item.id === 'workspace') as fabric.Rect;
+    // 重新设置workspac
+
+    if (init) {
+      this.workspace = this.canvas
+        .getObjects()
+        .find((item) => item.id === 'workspace') as fabric.Rect;
+    }
+
     this.workspace.set('width', width);
     this.workspace.set('height', height);
 
@@ -220,9 +227,10 @@ class WorkspacePlugin {
   }
 
   _bindMove() {
-    this.canvas.on('object:added', () => this._resizeToFit());
-    this.canvas.on('object:modified', () => this._resizeToFit());
-    this.canvas.on('object:removed', () => this._resizeToFit());
+    this.canvas.on(
+      'after:render',
+      throttle(() => this._resizeToFit(), 50)
+    );
   }
 
   _resizeToFit() {
@@ -244,9 +252,11 @@ class WorkspacePlugin {
           .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'center', 'bottom').y))
       ) +
       this.option.marginY * 2;
+
     this.setSize(
       Math.ceil(this.option.flexibleX ? max_x : this.option.width),
-      Math.ceil(this.option.flexibleY ? max_y : this.option.height)
+      Math.ceil(this.option.flexibleY ? max_y : this.option.height),
+      false
     );
     this.editor.emit('sizeChange', this.option.width, this.option.height);
   }
