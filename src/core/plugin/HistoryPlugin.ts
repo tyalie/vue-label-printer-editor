@@ -36,6 +36,7 @@ class HistoryPlugin {
     this.canvas.on({
       'object:added': (event) => this._save(event),
       'object:modified': (event) => this._save(event),
+      'object:removed': (event) => this._save(event),
     });
   }
 
