@@ -30,13 +30,12 @@ class HistoryPlugin {
   }
 
   _init() {
-    this.history = useRefHistory(ref(), {
+    this.history = useRefHistory(ref(this.editor.getJson()), {
       capacity: 50,
     });
     this.canvas.on({
       'object:added': (event) => this._save(event),
       'object:modified': (event) => this._save(event),
-      'selection:updated': (event) => this._save(event),
     });
   }
 
@@ -45,7 +44,7 @@ class HistoryPlugin {
   }
   _save(event) {
     // 过滤选择元素事件
-    const isSelect = event.action === undefined && event.e;
+    const isSelect = false && event.action === undefined && event.e;
     if (isSelect || !this.canvas) return;
     const workspace = this.canvas.getObjects().find((item) => item.id === 'workspace');
     if (!workspace) {
@@ -58,8 +57,8 @@ class HistoryPlugin {
 
   undo() {
     if (this.history.canUndo.value) {
-      this.renderCanvas();
       this.history.undo();
+      this.renderCanvas();
     }
   }
 
