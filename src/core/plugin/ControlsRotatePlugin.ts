@@ -25,6 +25,7 @@ class ControlsRotatePlugin {
   }
   init() {
     const { canvas } = this;
+    fabric.Object.prototype.snapAngle = 15;
     // 添加旋转控制响应区域
     fabric.Object.prototype.controls.mtr = new fabric.Control({
       x: -0.5,
@@ -84,6 +85,7 @@ class ControlsRotatePlugin {
     canvas.on('object:rotating', (event) => {
       const body = canvas.lowerCanvasEl.nextSibling as HTMLElement;
       const angle = canvas.getActiveObject()?.angle?.toFixed(2);
+
       if (angle === undefined) return;
       switch (event.transform?.corner) {
         case 'mtr':
