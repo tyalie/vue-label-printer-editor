@@ -100,3 +100,24 @@ export const clipboardText = async (
     throw error;
   }
 };
+
+export function calculateWorkspacePos(
+  obj: fabric.Object,
+  originX: str,
+  originY: str
+): { number; number } {
+  let gPos = { x: 0, y: 0 };
+
+  if (obj.group) {
+    gPos = calculateWorkspacePos(obj.group, 'center', 'center');
+  }
+
+  const mPos = obj.getPointByOrigin(originX, originY);
+
+  if (obj.group) {
+    mPos.x *= obj.group.scaleX;
+    mPos.y *= obj.group.scaleY;
+  }
+
+  return { x: gPos.x + mPos.x, y: gPos.y + mPos.y };
+}

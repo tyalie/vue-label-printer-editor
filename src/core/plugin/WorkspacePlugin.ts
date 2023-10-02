@@ -9,6 +9,7 @@
 import { fabric } from 'fabric';
 import Editor from '../core';
 import { throttle } from 'lodash-es';
+import { calculateWorkspacePos } from '@/utils/utils';
 type IEditor = Editor;
 
 class WorkspacePlugin {
@@ -227,18 +228,20 @@ class WorkspacePlugin {
   _resizeToFit() {
     if (!(this.option.flexibleX || this.option.flexibleY)) return;
 
+    debugger;
+
     const max_x =
       Math.max(
         ...this.canvas
           .getObjects()
-          .map((e) => (e.id == 'workspace' ? 0 : e.left + e.width * e.scaleX))
+          .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'right', 'center').x))
       ) +
       this.option.marginX * 2;
     const max_y =
       Math.max(
         ...this.canvas
           .getObjects()
-          .map((e) => (e.id == 'workspace' ? 0 : e.top + e.height * e.scaleY))
+          .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'center', 'bottom').y))
       ) +
       this.option.marginY * 2;
     this.setSize(
