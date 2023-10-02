@@ -71,7 +71,13 @@ class ServersPlugin {
   }
 
   getJson() {
-    return this.canvas.toJSON(['id', 'gradientAngle', 'selectable', 'hasControls']);
+    return this.canvas.toJSON([
+      'id',
+      'gradientAngle',
+      'selectable',
+      'hasControls',
+      'excludeFromExport',
+    ]);
   }
 
   /**

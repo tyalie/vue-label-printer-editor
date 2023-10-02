@@ -61,9 +61,11 @@ class WorkspacePlugin {
       if (workspace) {
         workspace.set('selectable', false);
         workspace.set('hasControls', false);
+        workspace.getObjects()[1].set('excludeFromExport', true);
         this.setSize(workspace.width, workspace.height);
         this.editor.emit('sizeChange', workspace.width, workspace.height);
       }
+
       resolve();
     });
   }
@@ -84,19 +86,42 @@ class WorkspacePlugin {
 
   // 初始化画布
   _initWorkspace() {
-    const workspace = new fabric.Rect({
+    const backplane = new fabric.Rect({
       fill: 'rgba(255,255,255,1)',
       width: this.option.width,
       height: this.option.height,
-      id: 'workspace',
+      id: 'back',
     });
+
+    const outline = new fabric.Rect({
+      fill: 'transparent',
+      stroke: 'gray',
+      strokeWidth: 0.5,
+      strokeDashArray: [2, 4],
+      width: this.option.width,
+      height: this.option.height,
+      id: 'outline',
+    });
+    outline.set('excludeFromExport', true);
+
+    const workspace = new fabric.Group(
+      [backplane, outline],
+      {
+        id: 'workspace',
+        fill: 'red',
+      },
+      false
+    );
+
     workspace.set('selectable', false);
     workspace.set('hasControls', false);
+    workspace.set('excludeFromExport', true);
     workspace.hoverCursor = 'default';
-    this.canvas.add(workspace);
-    this.canvas.renderAll();
 
+    this.canvas.add(workspace);
     this.workspace = workspace;
+
+    this.canvas.renderAll();
     this.auto();
   }
 
@@ -146,14 +171,22 @@ class WorkspacePlugin {
         .find((item) => item.id === 'workspace') as fabric.Rect;
     }
 
+    const back = this.workspace.getObjects()[0];
+    back.set('left', -width / 2);
+    back.set('top', -height / 2);
+    back.set('width', width);
+    back.set('height', height);
+
+    const outline = this.workspace.getObjects()[1];
+    outline.set('left', -width / 2 + this.option.marginX);
+    outline.set('top', -height / 2 + this.option.marginY);
+    outline.set('width', width - this.option.marginX * 2);
+    outline.set('height', height - this.option.marginY * 2);
+
     this.workspace.set('width', width);
     this.workspace.set('height', height);
 
-    // 超出画布不展示
-    this.workspace.clone((cloned: fabric.Rect) => {
-      this.canvas.clipPath = cloned;
-      this.canvas.requestRenderAll();
-    });
+    this.canvas.requestRenderAll();
   }
 
   setZoomAuto(scale: number, cb?: (left?: number, top?: number) => void) {
@@ -235,8 +268,6 @@ class WorkspacePlugin {
 
   _resizeToFit() {
     if (!(this.option.flexibleX || this.option.flexibleY)) return;
-
-    debugger;
 
     const max_x =
       Math.max(
