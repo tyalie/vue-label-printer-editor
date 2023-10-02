@@ -39,12 +39,12 @@
         <div v-if="state.show" :class="`left-bar ${state.toolsBarShow && 'show-tools-bar'}`">
           <Menu :active-name="state.menuActive" accordion @on-select="showToolsBar" width="65px">
             <MenuItem :name="1" class="menu-item">
-              <Icon type="md-book" size="24" />
-              <div>{{ $t('templates') }}</div>
-            </MenuItem>
-            <MenuItem :name="2" class="menu-item">
               <Icon type="md-images" size="24" />
               <div>{{ $t('elements') }}</div>
+            </MenuItem>
+            <MenuItem :name="2" class="menu-item">
+              <Icon type="md-book" size="24" />
+              <div>{{ $t('templates') }}</div>
             </MenuItem>
             <MenuItem :name="3" class="menu-item">
               <Icon type="ios-leaf-outline" size="24" />
@@ -57,14 +57,14 @@
           </Menu>
 
           <div class="content" v-show="state.toolsBarShow">
-            <!-- 生成模板 -->
-            <div v-show="state.menuActive === 1" class="left-panel">
-              <import-tmpl></import-tmpl>
-            </div>
             <!-- 常用元素 -->
-            <div v-show="state.menuActive === 2" class="left-panel">
+            <div v-show="state.menuActive === 1" class="left-panel">
               <tools></tools>
               <fontTmpl></fontTmpl>
+            </div>
+            <!-- 生成模板 -->
+            <div v-show="state.menuActive === 2" class="left-panel">
+              <import-tmpl></import-tmpl>
             </div>
             <!-- 卡通素材 -->
             <div v-show="state.menuActive === 3" class="left-panel">
