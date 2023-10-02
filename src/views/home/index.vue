@@ -97,7 +97,6 @@
             <!-- 新增字体样式使用 -->
             <!-- <Button @click="getFontJson" size="small">获取字体数据</Button> -->
             <set-size></set-size>
-            <bg-bar></bg-bar>
             <group></group>
             <replaceImg></replaceImg>
             <filters></filters>
@@ -149,7 +148,6 @@ import dele from '@/components/del.vue';
 import importTmpl from '@/components/importTmpl.vue';
 import tools from '@/components/tools.vue';
 import importSvgEl from '@/components/importSvgEl.vue';
-import bgBar from '@/components/bgBar.vue';
 import setSize from '@/components/setSize.vue';
 import replaceImg from '@/components/replaceImg.vue';
 import filters from '@/components/filters.vue';
@@ -187,6 +185,7 @@ import Editor, {
 
 // 创建编辑器
 const canvasEditor = new Editor();
+window.editor = canvasEditor;
 
 const event = new CanvasEventEmitter();
 

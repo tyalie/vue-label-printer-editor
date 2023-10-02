@@ -217,52 +217,6 @@
           </div>
         </Col>
       </Row>
-
-      <!-- 阴影 -->
-      <Divider plain orientation="left">{{ $t('attributes.shadow') }}</Divider>
-
-      <Row :gutter="12">
-        <Col flex="1">
-          <div class="ivu-col__box">
-            <span class="label">{{ $t('color') }}</span>
-            <div class="content">
-              <ColorPicker
-                v-model="baseAttr.shadow.color"
-                @on-change="(value) => changeCommon('color', value)"
-                alpha
-              />
-            </div>
-          </div>
-        </Col>
-        <Col flex="1">
-          <InputNumber
-            v-model="baseAttr.shadow.blur"
-            :defaultValue="0"
-            @on-change="(value) => changeShadow('blur', value)"
-            :append="$t('attributes.blur')"
-            :min="0"
-          ></InputNumber>
-        </Col>
-      </Row>
-
-      <Row :gutter="12">
-        <Col flex="1">
-          <InputNumber
-            v-model="baseAttr.shadow.offsetX"
-            :defaultValue="0"
-            @on-change="(value) => changeShadow('offsetX', value)"
-            :append="$t('attributes.offset_x')"
-          ></InputNumber>
-        </Col>
-        <Col flex="1">
-          <InputNumber
-            v-model="baseAttr.shadow.offsetY"
-            :defaultValue="0"
-            @on-change="(value) => changeShadow('offsetY', value)"
-            :append="$t('attributes.offset_y')"
-          ></InputNumber>
-        </Col>
-      </Row>
     </div>
 
     <!-- ID属性 -->
@@ -293,7 +247,7 @@ import { Spin } from 'view-ui-plus';
 const event = inject('event');
 const update = getCurrentInstance();
 const repoSrc = import.meta.env.APP_REPO;
-const { fabric, mixinState, canvasEditor } = useSelect();
+const { mixinState, canvasEditor } = useSelect();
 // 通用元素
 const baseType = [
   'text',
@@ -450,7 +404,6 @@ const getObjectAttr = (e) => {
     baseAttr.top = activeObject.get('top');
     baseAttr.stroke = activeObject.get('stroke');
     baseAttr.strokeWidth = activeObject.get('strokeWidth');
-    baseAttr.shadow = activeObject.get('shadow') || {};
     baseAttr.angle = activeObject.get('angle') || 0;
     baseAttr.points = activeObject.get('points') || {};
 
@@ -542,13 +495,6 @@ const borderSet = (key) => {
     activeObject.set(stroke.value);
     canvasEditor.canvas.renderAll();
   }
-};
-
-// 阴影设置
-const changeShadow = () => {
-  const activeObject = canvasEditor.canvas.getActiveObjects()[0];
-  activeObject && activeObject.set('shadow', new fabric.Shadow(baseAttr.shadow));
-  canvasEditor.canvas.renderAll();
 };
 
 // 加粗
