@@ -106,18 +106,19 @@ export function calculateWorkspacePos(
   originX: str,
   originY: str
 ): { number; number } {
-  let gPos = { x: 0, y: 0 };
-
   if (obj.group) {
-    gPos = calculateWorkspacePos(obj.group, 'center', 'center');
+    return calculateWorkspacePos(obj.group, originX, originY);
   }
 
-  const mPos = obj.getPointByOrigin(originX, originY);
+  const bound_rect = obj.getBoundingRect(true, true);
 
-  if (obj.group) {
-    mPos.x *= obj.group.scaleX;
-    mPos.y *= obj.group.scaleY;
-  }
+  const mPos = {
+    x: bound_rect.left + bound_rect.width / 2,
+    y: bound_rect.top + bound_rect.height / 2,
+  };
 
-  return { x: gPos.x + mPos.x, y: gPos.y + mPos.y };
+  mPos.x += ((['left', 'center', 'right'].indexOf(originX) - 1) * bound_rect.width) / 2;
+  mPos.y += ((['top', 'center', 'bottom'].indexOf(originX) - 1) * bound_rect.height) / 2;
+
+  return mPos;
 }
