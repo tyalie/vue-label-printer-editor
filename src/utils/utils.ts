@@ -118,7 +118,7 @@ export function calculateWorkspacePos(
   };
 
   mPos.x += ((['left', 'center', 'right'].indexOf(originX) - 1) * bound_rect.width) / 2;
-  mPos.y += ((['top', 'center', 'bottom'].indexOf(originX) - 1) * bound_rect.height) / 2;
+  mPos.y += ((['top', 'center', 'bottom'].indexOf(originY) - 1) * bound_rect.height) / 2;
 
   return mPos;
 }
