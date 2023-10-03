@@ -266,18 +266,18 @@ class WorkspacePlugin {
 
     const max_x =
       Math.max(
+        this.option.marginX,
         ...this.canvas
           .getObjects()
           .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'right', 'center').x))
-      ) +
-      this.option.marginX * 2;
+      ) + this.option.marginX;
     const max_y =
       Math.max(
+        this.option.marginY,
         ...this.canvas
           .getObjects()
           .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'center', 'bottom').y))
-      ) +
-      this.option.marginY * 2;
+      ) + this.option.marginY;
 
     this.setSize(
       Math.ceil(this.option.flexibleX ? max_x : this.option.width),
