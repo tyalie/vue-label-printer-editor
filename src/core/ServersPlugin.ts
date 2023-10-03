@@ -71,13 +71,7 @@ class ServersPlugin {
   }
 
   getJson() {
-    return this.canvas.toJSON([
-      'id',
-      'gradientAngle',
-      'selectable',
-      'hasControls',
-      'excludeFromExport',
-    ]);
+    return this.canvas.toJSON(['id', 'gradientAngle', 'selectable', 'hasControls']);
   }
 
   /**
@@ -113,10 +107,18 @@ class ServersPlugin {
     downFile(fileStr, 'json');
   }
 
+  _exportableCanvas() {
+    const canvas = new fabric.Canvas();
+    canvas.loadFromJSON(this.canvas.toJSON(['id']), () => canvas.renderAll());
+    const workspace = canvas.getObjects().find((item) => item.id === 'workspace');
+    canvas.remove(workspace); // delete our background group before saving
+    return canvas;
+  }
+
   saveSvg() {
     this.editor.hooksEntity.hookSaveBefore.callAsync('', () => {
       const option = this._getSaveSvgOption();
-      const dataUrl = this.canvas.toSVG(option);
+      const dataUrl = this._exportableCanvas().toSVG(option);
       const fileStr = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(dataUrl)}`;
       this.editor.hooksEntity.hookSaveAfter.callAsync(fileStr, () => {
         downFile(fileStr, 'svg');
@@ -127,8 +129,9 @@ class ServersPlugin {
   saveImg() {
     this.editor.hooksEntity.hookSaveBefore.callAsync('', () => {
       const option = this._getSaveOption();
-      this.canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-      const dataUrl = this.canvas.toDataURL(option);
+      const canvas = this._exportableCanvas();
+      canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+      const dataUrl = canvas.toDataURL(option);
       this.editor.hooksEntity.hookSaveAfter.callAsync(dataUrl, () => {
         downFile(dataUrl, 'png');
       });

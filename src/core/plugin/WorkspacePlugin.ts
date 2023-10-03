@@ -47,6 +47,10 @@ class WorkspacePlugin {
     this._initResizeObserve();
     this._bindWheel();
     this._bindMove();
+
+    this.editor.on('historyInitSuccess', () => {
+      this.setSize(this.option.width, this.option.height, true);
+    });
   }
 
   // hookImportBefore() {
@@ -61,7 +65,6 @@ class WorkspacePlugin {
       if (workspace) {
         workspace.set('selectable', false);
         workspace.set('hasControls', false);
-        workspace.getObjects()[1].set('excludeFromExport', true);
         this.setSize(workspace.width, workspace.height);
         this.editor.emit('sizeChange', workspace.width, workspace.height);
       }
@@ -98,27 +101,19 @@ class WorkspacePlugin {
       stroke: 'gray',
       strokeWidth: 0.5,
       strokeDashArray: [2, 4],
-      width: this.option.width,
-      height: this.option.height,
+      width: 0,
+      height: 0,
       id: 'outline',
     });
-    outline.set('excludeFromExport', true);
 
-    const workspace = new fabric.Group(
-      [backplane, outline],
-      {
-        id: 'workspace',
-        fill: 'red',
-      },
-      false
-    );
+    const workspace = new fabric.Group([backplane, outline], { id: 'workspace' }, false);
 
     workspace.set('selectable', false);
     workspace.set('hasControls', false);
-    workspace.set('excludeFromExport', true);
     workspace.hoverCursor = 'default';
 
     this.canvas.add(workspace);
+    this.canvas.sendToBack(workspace);
     this.workspace = workspace;
 
     this.canvas.renderAll();

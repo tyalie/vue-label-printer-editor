@@ -35,6 +35,11 @@
   "material": {
     "cartoon": "cartoon"
   },
+  "quick": {
+    "lock": "Lock",
+    "del": "Delete",
+    "copy": "Copy"
+  },
   "filters": {
     "simple": "Simple Filter",
     "complex": "Complex Filter",

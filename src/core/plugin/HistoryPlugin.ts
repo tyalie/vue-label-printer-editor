@@ -30,7 +30,7 @@ class HistoryPlugin {
   }
 
   _init() {
-    this.history = useRefHistory(ref(this.editor.getJson()), {
+    this.history = useRefHistory(ref(this._get_data()), {
       capacity: 50,
     });
     this.canvas.on({
@@ -38,6 +38,10 @@ class HistoryPlugin {
       'object:modified': (event) => this._save(event),
       'object:removed': (event) => this._save(event),
     });
+  }
+
+  _get_data() {
+    return this.editor.getJson();
   }
 
   getHistory() {
@@ -52,7 +56,8 @@ class HistoryPlugin {
       return;
     }
     if (this.history.isTracking.value) {
-      this.history.source.value = this.editor.getJson();
+      console.debug('History store', this._get_data());
+      this.history.source.value = this._get_data();
     }
   }
 
@@ -72,6 +77,7 @@ class HistoryPlugin {
     this.history.pause();
     this.canvas.clear();
     this.canvas.loadFromJSON(this.history.source.value, () => {
+      this.editor.emit('historyInitSuccess');
       this.canvas.renderAll();
       this.history.resume();
     });
