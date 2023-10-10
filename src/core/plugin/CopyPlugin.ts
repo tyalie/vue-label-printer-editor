@@ -8,8 +8,10 @@
 
 import { fabric } from 'fabric';
 import Editor from '../core';
-type IEditor = Editor;
 import { v4 as uuid } from 'uuid';
+import { t } from '@/language/index';
+
+type IEditor = Editor;
 
 class CopyPlugin {
   public canvas: fabric.Canvas;
@@ -103,7 +105,14 @@ class CopyPlugin {
   contextMenu() {
     const activeObject = this.canvas.getActiveObject();
     if (activeObject) {
-      return [{ text: '复制', hotkey: 'Ctrl+V', disabled: false, onclick: () => this.clone() }];
+      return [
+        {
+          text: t('mouseMenu.copy'),
+          hotkey: 'Ctrl+V',
+          disabled: false,
+          onclick: () => this.clone(),
+        },
+      ];
     }
   }
 

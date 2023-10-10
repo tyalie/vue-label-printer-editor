@@ -8,8 +8,8 @@
 
 import { fabric } from 'fabric';
 import Editor from '../core';
+import { t } from '@/language/index';
 type IEditor = Editor;
-// import { v4 as uuid } from 'uuid';
 
 class DeleteHotKeyPlugin {
   public canvas: fabric.Canvas;
@@ -42,7 +42,15 @@ class DeleteHotKeyPlugin {
   contextMenu() {
     const activeObject = this.canvas.getActiveObject();
     if (activeObject) {
-      return [null, { text: '删除', hotkey: 'Ctrl+V', disabled: false, onclick: () => this.del() }];
+      return [
+        null,
+        {
+          text: t('mouseMenu.delete'),
+          hotkey: 'Ctrl+V',
+          disabled: false,
+          onclick: () => this.del(),
+        },
+      ];
     }
   }
 

@@ -9,6 +9,7 @@
 import { fabric } from 'fabric';
 import Editor from '../core';
 import { v4 as uuid } from 'uuid';
+import { t } from '@/language/index';
 type IEditor = Editor;
 
 class GroupPlugin {
@@ -55,12 +56,24 @@ class GroupPlugin {
     console.log(activeObject, '111');
     if (activeObject && activeObject.type === 'group') {
       return [
-        { text: '拆分组合', hotkey: 'Ctrl+V', disabled: false, onclick: () => this.unGroup() },
+        {
+          text: t('mouseMenu.unGroup'),
+          hotkey: 'Ctrl+V',
+          disabled: false,
+          onclick: () => this.unGroup(),
+        },
       ];
     }
 
     if (this.canvas.getActiveObjects().length > 1) {
-      return [{ text: '组合', hotkey: 'Ctrl+V', disabled: false, onclick: () => this.group() }];
+      return [
+        {
+          text: t('mouseMenu.group'),
+          hotkey: 'Ctrl+V',
+          disabled: false,
+          onclick: () => this.group(),
+        },
+      ];
     }
   }
   destroy() {

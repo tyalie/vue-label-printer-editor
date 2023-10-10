@@ -8,6 +8,7 @@
 
 import { fabric } from 'fabric';
 import Editor from '../core';
+import { t } from '@/language/index';
 type IEditor = Editor;
 
 class CenterAlignPlugin {
@@ -58,7 +59,7 @@ class CenterAlignPlugin {
     if (activeObject) {
       return [
         {
-          text: '水平垂直居中',
+          text: t('mouseMenu.center'),
           hotkey: 'Ctrl+V',
           disabled: false,
           onclick: () => this.position('center'),

@@ -8,6 +8,7 @@
 
 import { fabric } from 'fabric';
 import Editor from '../core';
+import { t } from '@/language/index';
 type IEditor = Editor;
 
 class LayerPlugin {
@@ -34,7 +35,6 @@ class LayerPlugin {
     if (actives && actives.length === 1) {
       const activeObject = this.canvas.getActiveObjects()[0];
       activeObject && activeObject.bringForward();
-      this.canvas.renderAll();
       this._workspaceSendToBack();
     }
   }
@@ -44,8 +44,6 @@ class LayerPlugin {
     if (actives && actives.length === 1) {
       const activeObject = this.canvas.getActiveObjects()[0];
       activeObject && activeObject.bringToFront();
-      this.canvas.renderAll();
-      console.log(this);
       this._workspaceSendToBack();
     }
   }
@@ -55,7 +53,6 @@ class LayerPlugin {
     if (actives && actives.length === 1) {
       const activeObject = this.canvas.getActiveObjects()[0];
       activeObject && activeObject.sendBackwards();
-      this.canvas.renderAll();
       this._workspaceSendToBack();
     }
   }
@@ -65,7 +62,6 @@ class LayerPlugin {
     if (actives && actives.length === 1) {
       const activeObject = this.canvas.getActiveObjects()[0];
       activeObject && activeObject.sendToBack();
-      this.canvas.renderAll();
       this._workspaceSendToBack();
     }
   }
@@ -75,26 +71,26 @@ class LayerPlugin {
     if (activeObject) {
       return [
         {
-          text: '图层管理',
+          text: t('mouseMenu.layer'),
           hotkey: '❯',
           subitems: [
             {
-              text: '上一个',
+              text: t('mouseMenu.up'),
               hotkey: 'key',
               onclick: () => this.up(),
             },
             {
-              text: '下一个',
+              text: t('mouseMenu.down'),
               hotkey: 'key',
               onclick: () => this.down(),
             },
             {
-              text: '置顶',
+              text: t('mouseMenu.upTop'),
               hotkey: 'key',
               onclick: () => this.upTop(),
             },
             {
-              text: '置底',
+              text: t('mouseMenu.downTop'),
               hotkey: 'key',
               onclick: () => this.downTop(),
             },
