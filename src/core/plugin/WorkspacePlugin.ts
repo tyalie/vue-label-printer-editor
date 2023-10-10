@@ -27,10 +27,6 @@ class WorkspacePlugin {
     this.init({
       width: 100,
       height: 128,
-      flexibleX: true,
-      flexibleY: false,
-      marginX: 10,
-      marginY: 10,
     });
   }
 
@@ -52,12 +48,6 @@ class WorkspacePlugin {
       this.setSize(this.option.width, this.option.height, true);
     });
   }
-
-  // hookImportBefore() {
-  //   return new Promise((resolve, reject) => {
-  //     resolve();
-  //   });
-  // }
 
   hookImportAfter() {
     return new Promise((resolve) => {
@@ -158,7 +148,6 @@ class WorkspacePlugin {
 
     this.option.width = width;
     this.option.height = height;
-    // 重新设置workspac
 
     if (init) {
       this.workspace = this.canvas
@@ -173,10 +162,10 @@ class WorkspacePlugin {
     back.set('height', height);
 
     const outline = this.workspace.getObjects()[1];
-    outline.set('left', -width / 2 + this.option.marginX);
-    outline.set('top', -height / 2 + this.option.marginY);
-    outline.set('width', width - this.option.marginX * 2);
-    outline.set('height', height - this.option.marginY * 2);
+    outline.set('left', -width / 2 + this.editor.getMarginX());
+    outline.set('top', -height / 2 + this.editor.getMarginY());
+    outline.set('width', width - this.editor.getMarginX() * 2);
+    outline.set('height', height - this.editor.getMarginY() * 2);
 
     this.workspace.set('width', width);
     this.workspace.set('height', height);
@@ -262,26 +251,28 @@ class WorkspacePlugin {
   }
 
   _resizeToFit() {
-    if (!(this.option.flexibleX || this.option.flexibleY)) return;
+    if (!(this.editor.getFlexibilityX() || this.editor.getFlexibilityY())) return;
 
     const max_x =
       Math.max(
-        this.option.marginX,
+        this.editor.getMarginX(),
         ...this.canvas
           .getObjects()
           .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'right', 'center').x))
-      ) + this.option.marginX;
+      ) + this.editor.getMarginX();
     const max_y =
       Math.max(
-        this.option.marginY,
+        this.editor.getMarginY(),
         ...this.canvas
           .getObjects()
           .map((e) => (e.id == 'workspace' ? 0 : calculateWorkspacePos(e, 'center', 'bottom').y))
-      ) + this.option.marginY;
+      ) + this.editor.getMarginY();
+
+    const dims = this.editor.getDimensions();
 
     this.setSize(
-      Math.ceil(this.option.flexibleX ? max_x : this.option.width),
-      Math.ceil(this.option.flexibleY ? max_y : this.option.height),
+      Math.ceil(this.editor.getFlexibilityX() ? max_x : dims.width),
+      Math.ceil(this.editor.getFlexibilityY() ? max_y : dims.height),
       false
     );
     this.editor.emit('sizeChange', this.option.width, this.option.height);

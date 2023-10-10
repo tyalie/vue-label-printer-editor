@@ -22,17 +22,11 @@ class Editor extends EventEmitter {
     'hookSaveBefore',
     'hookSaveAfter',
   ];
+
   private hooksEntity: {
     [propName: string]: AsyncSeriesHook;
   } = {};
-  // constructor(canvas: fabric.Canvas) {
-  //   super();
-  //   this.canvas = canvas;
-  //   this._initContextMenu();
-  //   this._bindContextMenu();
-  //   this._initActionHooks();
-  //   this._initServersPlugin();
-  // }
+
   init(canvas: fabric.Canvas) {
     this.canvas = canvas;
     this._initContextMenu();

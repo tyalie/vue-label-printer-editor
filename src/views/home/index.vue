@@ -181,6 +181,7 @@ import Editor, {
   FlipPlugin,
   RulerPlugin,
   MaterialPlugin,
+  SettingsPlugin,
 } from '@/core';
 
 // 创建编辑器
@@ -227,6 +228,7 @@ onMounted(() => {
   canvasEditor.use(FlipPlugin);
   canvasEditor.use(RulerPlugin);
   canvasEditor.use(MaterialPlugin);
+  canvasEditor.use(SettingsPlugin);
 
   event.init(canvas);
   state.show = true;
