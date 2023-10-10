@@ -11,14 +11,17 @@ class SettingsPlugin {
     'setFlexibilityY',
     'getFlexibilityX',
     'getFlexibilityY',
+    'setAutoAlignDirection',
+    'getAutoAlignDirection',
   ];
 
   width = 0;
-  height = 0;
+  height = 128;
   flexibleX = true;
-  flexibleY = true;
+  flexibleY = false;
   marginX = 10;
   marginY = 10;
+  autoAlignDirection: '' | 'X' | 'Y' = 'X';
 
   setWidth(width: number) {
     this.width = width;
@@ -59,6 +62,16 @@ class SettingsPlugin {
 
   getFlexibilityY() {
     return this.flexibleY;
+  }
+
+  setAutoAlignDirection(value: '' | 'X' | 'Y') {
+    this.autoAlignDirection = value;
+  }
+
+  getAutoAlignDirection(value: boolean) {
+    if (this.flexibleX && this.flexibleY) return '';
+
+    return this.autoAlignDirection;
   }
 
   destroy() {

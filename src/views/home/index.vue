@@ -175,6 +175,7 @@ import Editor, {
   DrawLinePlugin,
   GroupTextEditorPlugin,
   GroupAlignPlugin,
+  AutomaticAlignPlugin,
   WorkspacePlugin,
   DownFontPlugin,
   HistoryPlugin,
@@ -222,6 +223,7 @@ onMounted(() => {
   canvasEditor.use(DrawLinePlugin);
   canvasEditor.use(GroupTextEditorPlugin);
   canvasEditor.use(GroupAlignPlugin);
+  canvasEditor.use(AutomaticAlignPlugin);
   canvasEditor.use(WorkspacePlugin);
   canvasEditor.use(DownFontPlugin);
   canvasEditor.use(AlignGuidLinePlugin);
