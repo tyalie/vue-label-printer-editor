@@ -209,8 +209,8 @@ onMounted(() => {
 
   // 初始化编辑器
   canvasEditor.init(canvas);
+  canvasEditor.use(SettingsPlugin);
   canvasEditor.use(DringPlugin);
-  canvasEditor.use(AlignGuidLinePlugin);
   canvasEditor.use(ControlsPlugin);
   canvasEditor.use(ControlsRotatePlugin);
   canvasEditor.use(CenterAlignPlugin);
@@ -224,11 +224,11 @@ onMounted(() => {
   canvasEditor.use(GroupAlignPlugin);
   canvasEditor.use(WorkspacePlugin);
   canvasEditor.use(DownFontPlugin);
+  canvasEditor.use(AlignGuidLinePlugin);
   canvasEditor.use(HistoryPlugin);
   canvasEditor.use(FlipPlugin);
   canvasEditor.use(RulerPlugin);
   canvasEditor.use(MaterialPlugin);
-  canvasEditor.use(SettingsPlugin);
 
   event.init(canvas);
   state.show = true;

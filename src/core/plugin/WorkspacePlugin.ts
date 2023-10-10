@@ -170,7 +170,7 @@ class WorkspacePlugin {
     this.workspace.set('width', width);
     this.workspace.set('height', height);
 
-    this.canvas.requestRenderAll();
+    this.canvas.renderOnAddRemove && this.canvas.requestRenderAll();
   }
 
   setZoomAuto(scale: number, cb?: (left?: number, top?: number) => void) {
@@ -244,10 +244,7 @@ class WorkspacePlugin {
   }
 
   _bindMove() {
-    this.canvas.on(
-      'after:render',
-      throttle(() => this._resizeToFit(), 50)
-    );
+    this.canvas.on('before:render', () => this._resizeToFit());
   }
 
   _resizeToFit() {
@@ -270,11 +267,13 @@ class WorkspacePlugin {
 
     const dims = this.editor.getDimensions();
 
+    this.canvas.renderOnAddRemove = false;
     this.setSize(
       Math.ceil(this.editor.getFlexibilityX() ? max_x : dims.width),
       Math.ceil(this.editor.getFlexibilityY() ? max_y : dims.height),
       false
     );
+    this.canvas.renderOnAddRemove = true;
     this.editor.emit('sizeChange', this.option.width, this.option.height);
   }
 
